@@ -1,10 +1,7 @@
 mod parse;
 
 fn main() {
-    println!(
-        "{}",
-        build(r#"(\n.\f.\x.f (n f x)) (\f.\x.f (f x))"#).unwrap()
-    )
+    println!("{}", build(include_str!("../example.la")).unwrap())
 }
 
 fn build(source: &str) -> Result<String, String> {
