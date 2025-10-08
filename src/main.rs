@@ -64,7 +64,7 @@ impl Expr {
 
                 let body = body.compile(ctx)?;
                 let lambda_abstract = &format!(
-                    "LA.{id}:\n{0}{1}{2}{body}\tret\n\n",
+                    "LA.{id}:\n{0}{1}{2}{body}{3}\n",
                     mnemonic!(BLANK => format!("Lambda Abstract: {self}")),
                     mnemonic!(BLANK =>  format!("Environment {{ {} }}",
                         ctx.env
@@ -77,7 +77,8 @@ impl Expr {
                     mnemonic!(
                         format!("mov {}, rbx", REGS[ctx.variable(arg)?])
                         => format!("Bind variable: {arg}")
-                    )
+                    ),
+                    mnemonic!("ret" => BLANK)
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
