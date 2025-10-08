@@ -1,3 +1,4 @@
+use std::fmt::{self, Display};
 mod parse;
 
 fn main() {
@@ -39,7 +40,7 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\n{}\tcall stackframe\t;Apply lambda\n",
+                "{}\tmov rbx, rax\n{}\tcall stackframe\t;Apply lambda {la}\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -87,6 +88,16 @@ impl Context {
     fn bind(&mut self, name: &str) {
         if !self.env.contains(&name.to_string()) {
             self.env.push(name.to_string());
+        }
+    }
+}
+
+impl Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Expr::Apply(a, b) => write!(f, "({a}{b})"),
+            Expr::Variable(a) => write!(f, "{a}"),
+            Expr::Lambda(a, b) => write!(f, "(λ{a}.{b})"),
         }
     }
 }
