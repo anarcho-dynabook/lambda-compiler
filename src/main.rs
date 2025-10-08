@@ -38,7 +38,11 @@ impl Expr {
     fn compile(&self, ctx: &mut Context) -> Result<String, String> {
         macro_rules! mnemonic {
             ($asm: expr => $cmt: expr) => {
-                format!("{INDENT}{:<16};{}\n", $asm, $cmt)
+                match ($asm.to_string().as_str(), $cmt.to_string().as_str()) {
+                    (BLANK, cmt) => format!("{INDENT};;; {cmt}\n"),
+                    (asm, BLANK) => format!("{INDENT}{asm:<16}\n"),
+                    (asm, cmt) => format!("{INDENT}{asm:<16}; {cmt}\n"),
+                }
             };
         }
         match self {
@@ -46,17 +50,15 @@ impl Expr {
                 format!("mov rax, {}", REGS[ctx.variable(name)?])
                 => format!("Load variable: {name}")
             )),
-            Expr::Apply(la, arg) => {
-                let arg = arg.compile(ctx)?;
-                let la = la.compile(ctx)?;
-                Ok(format!(
-                    "{arg}{0}{1}{la}{2}{3}",
-                    mnemonic!("mov rbx, rax" => format!("Argument: {arg}")),
-                    mnemonic!("push rbx"     => "Migrate (protect from overwrite)"),
-                    mnemonic!("pop rbx"      => "Reinstate in argument from stack"),
-                    mnemonic!("call rax"     => format!("Apply lambda: {la}")),
-                ))
-            }
+            Expr::Apply(la, arg) => Ok(format!(
+                "{arg}{0}{1}{la}{2}{3}",
+                mnemonic!("mov rbx, rax" => format!("Argument: {arg}")),
+                mnemonic!("push rbx"     => "Migrate (protect from overwrite)"),
+                mnemonic!("pop rbx"      => "Reinstate in argument from stack"),
+                mnemonic!("call rax"     => format!("Apply lambda: {la}")),
+                arg = arg.compile(ctx)?,
+                la = la.compile(ctx)?,
+            )),
             Expr::Lambda(arg, body) => {
                 let id = ctx.id();
                 let original_env = ctx.env.clone();
