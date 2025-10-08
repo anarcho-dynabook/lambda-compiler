@@ -39,7 +39,7 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\n{}\tcall stackframe\n",
+                "{}\tmov rbx, rax\n{}\tcall stackframe\t;Apply lambda\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
