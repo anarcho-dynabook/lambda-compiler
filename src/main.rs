@@ -40,7 +40,7 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\t; Argument: {arg}\n\tpush rbx\t\t; Migrate to stack (protect from rewrite)\n{}\tpop rbx\t\t\t; Reinstate in argument\n\tcall rax\t\t; Apply lambda: {la}\n",
+                "{}\tmov rbx, rax\t; Argument: {arg}\n\tpush rbx\t\t; Migrate (protect from rewrite)\n{}\tpop rbx\t\t\t; Reinstate in argument from stack\n\tcall rax\t\t; Apply lambda: {la}\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
