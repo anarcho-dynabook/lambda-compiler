@@ -8,7 +8,7 @@ fn build(source: &str) -> Result<String, String> {
     let ctx = &mut Context::default();
     let code = Expr::parse(source)?.compile(ctx)?;
     Ok(format!(
-        "_main:\n{code}\nmov rax, 0x2000001\n\tmov rdi, 0\n\tsyscall\n\n{}",
+        ".text:\n\talign 16\n\tglobal _main\n_main:\n{code}\n\tmov rdi, rax\n\tmov rax, 0x2000001\n\tsyscall\n\n{}",
         ctx.code
     ))
 }
@@ -42,7 +42,7 @@ impl Expr {
                 }
             }
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rdx, rax\n{}\tcall rax\n",
+                "{}\tmov rbx, rax\n{}\tcall rax\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -50,8 +50,16 @@ impl Expr {
                 let id = ctx.id();
                 let frame = &mut ctx.clone();
                 frame.env.push(arg.clone());
-                ctx.code += &format!("LA.{id}:\n{}\tret\n\n", body.compile(frame)?);
-                Ok(format!("\tmov rax, LA.{id}\n"))
+                ctx.code += &format!(
+                    "LA.{id}:{}{}\tret\n\n",
+                    if let Some(reg) = REGS.get(frame.variable(arg)?) {
+                        format!("\tmov {reg}, rdx\n")
+                    } else {
+                        format!("\tpush rdx\n")
+                    },
+                    body.compile(frame)?
+                );
+                Ok(format!("\tlea rax, [rel LA.{id}]\n"))
             }
         }
     }
