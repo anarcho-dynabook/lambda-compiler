@@ -1,10 +1,18 @@
 use parse::{BLANK, INDENT};
 use std::fmt::{self, Display};
+use std::io::{Read, Write, stdin, stdout};
 
 mod parse;
 
 fn main() {
-    println!("{}", build(include_str!("../example.la")).unwrap())
+    let code = {
+        let mut buffer = String::new();
+        stdin().read_to_string(&mut buffer).unwrap();
+        buffer.trim().to_owned()
+    };
+    dbg!(&code);
+    let output = build(&code).unwrap();
+    stdout().write_all(output.as_bytes()).unwrap();
 }
 
 fn build(source: &str) -> Result<String, String> {
