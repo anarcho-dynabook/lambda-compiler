@@ -40,7 +40,7 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\n\tpush rbx\n{}\tpop rbx\n\tcall rax\t; Apply lambda: {la}\n",
+                "{}\tmov rbx, rax\n\tpush rbx\n{}\tpop rbx\n\tcall stackframe\t; Apply lambda: {la}\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -51,7 +51,7 @@ impl Expr {
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
                     format!(
-                        "\t; Lambda Abstract: {self}\n\t; Environment: {{ {} }}\n\tmov {}, rbx\t; Bind variable: {arg}\n",
+                        "\t; Lambda Abstract: {self}\n\t; Environment {{ {} }}\n\tmov {}, rbx\t; Bind variable: {arg}\n",
                         ctx.env
                             .iter()
                             .enumerate()
