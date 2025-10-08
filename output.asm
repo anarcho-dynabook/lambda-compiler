@@ -2,6 +2,9 @@
 	align 16
 	global _main
 
+; Source
+; (\m.\n.\f.m (n f)) (\f.\x.f (f (f x))) (\f.\x.f (f x))
+
 _main:
 	lea rax, [rel LA.0]
 	push rax
@@ -27,7 +30,7 @@ _main:
 
 LA.2:
 	; Environment: "m: rcx, n: rdx, f: rsi"
-	mov rsi, rbx	; Bind variable
+	mov rsi, rbx	; Bind variable `f`
 	mov rax, rcx	; load variable `m`
 	push rax
 	mov rax, rdx	; load variable `n`
@@ -43,19 +46,19 @@ LA.2:
 
 LA.1:
 	; Environment: "m: rcx, n: rdx"
-	mov rdx, rbx	; Bind variable
+	mov rdx, rbx	; Bind variable `n`
 	lea rax, [rel LA.2]
 	ret
 
 LA.0:
 	; Environment: "m: rcx"
-	mov rcx, rbx	; Bind variable
+	mov rcx, rbx	; Bind variable `m`
 	lea rax, [rel LA.1]
 	ret
 
 LA.4:
 	; Environment: "m: rcx, f: rdx, x: rsi"
-	mov rsi, rbx	; Bind variable
+	mov rsi, rbx	; Bind variable `x`
 	mov rax, rdx	; load variable `f`
 	push rax
 	mov rax, rdx	; load variable `f`
@@ -76,13 +79,13 @@ LA.4:
 
 LA.3:
 	; Environment: "m: rcx, f: rdx"
-	mov rdx, rbx	; Bind variable
+	mov rdx, rbx	; Bind variable `f`
 	lea rax, [rel LA.4]
 	ret
 
 LA.6:
 	; Environment: "m: rcx, f: rdx, x: rsi"
-	mov rsi, rbx	; Bind variable
+	mov rsi, rbx	; Bind variable `x`
 	mov rax, rdx	; load variable `f`
 	push rax
 	mov rax, rdx	; load variable `f`
@@ -98,7 +101,7 @@ LA.6:
 
 LA.5:
 	; Environment: "m: rcx, f: rdx"
-	mov rdx, rbx	; Bind variable
+	mov rdx, rbx	; Bind variable `f`
 	lea rax, [rel LA.6]
 	ret
 

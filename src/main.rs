@@ -11,6 +11,7 @@ fn build(source: &str) -> Result<String, String> {
     let ctx = &mut Context::default();
     let code = Expr::parse(source)?.compile(ctx)?;
     Ok(include_str!("template.asm")
+        .replace("$src", source)
         .replace("$main", &code)
         .replace("$code", &ctx.code))
 }
@@ -52,7 +53,7 @@ impl Expr {
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
                     format!(
-                        "\t; Environment: {:?}\n\tmov {}, rbx\t; Bind variable\n",
+                        "\t; Environment: {:?}\n\tmov {}, rbx\t; Bind variable `{arg}`\n",
                         ctx.env
                             .iter()
                             .enumerate()

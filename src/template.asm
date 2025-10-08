@@ -2,6 +2,9 @@
 	align 16
 	global _main
 
+; Source
+; $src
+
 _main:
 $main
 
