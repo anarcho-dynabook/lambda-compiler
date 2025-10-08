@@ -3,7 +3,7 @@ use std::iter::Peekable;
 use std::str::Chars;
 
 const INDENT: &str = "    ";
-const BLANK: &str = "    ";
+const BLANK: &str = "";
 
 impl Expr {
     pub fn parse(input: &str) -> Result<Expr, String> {
