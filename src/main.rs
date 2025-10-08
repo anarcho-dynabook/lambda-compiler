@@ -51,7 +51,16 @@ impl Expr {
                 let original_env = ctx.env.clone();
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
-                    format!("\tmov {}, rbx\t; Bind variable\n", REGS[ctx.variable(arg)?]),
+                    format!(
+                        "\t; Environment: {:?}\n\tmov {}, rbx\t; Bind variable\n",
+                        ctx.env
+                            .iter()
+                            .enumerate()
+                            .map(|(i, x)| format!("{x}: {}", REGS[i]))
+                            .collect::<Vec<_>>()
+                            .join(", "),
+                        REGS[ctx.variable(arg)?]
+                    ),
                     body.compile(ctx)?
                 );
                 ctx.code += lambda_abstract;
