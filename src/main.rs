@@ -36,7 +36,7 @@ impl Expr {
     fn compile(&self, ctx: &mut Context) -> Result<String, String> {
         match self {
             Expr::Variable(name) => Ok(format!(
-                "\tmov rax, {}\t; load variable {name}\n",
+                "\tmov rax, {}\t; Load variable {name}\n",
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
