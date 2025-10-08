@@ -41,13 +41,13 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\n{}\tpop rax\n\tcall rax\n",
-                arg.compile(ctx)?,
+                "{}\tpush rax\n{}\tmov rbx, rax\n\tpop rax\n\tcall stackframe\n",
                 la.compile(ctx)?,
+                arg.compile(ctx)?,
             )),
             Expr::Lambda(arg, body) => {
                 let id = ctx.id();
-                ctx.env.push(arg.clone());
+                ctx.bind(arg);
                 let original_env = ctx.env.clone();
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
@@ -65,7 +65,7 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(format!("\tpush rax\n\tlea rax, [rel LA.{id}]\n"))
+                Ok(format!("\tlea rax, [rel LA.{id}]\n"))
             }
         }
     }
@@ -83,6 +83,12 @@ impl Context {
             Ok(var)
         } else {
             Err(format!("undefine variable: {name}"))
+        }
+    }
+
+    fn bind(&mut self, name: &str) {
+        if !self.env.contains(&name.to_string()) {
+            self.env.push(name.to_string());
         }
     }
 }
