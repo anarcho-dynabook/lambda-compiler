@@ -1,1 +1,1 @@
-(λn.λf.λx.f(nfx)) (\f.\x.f(f(fx)))
+(λn.λf.λx.f(nfx)) (λf.λx.f(f(fx)))
