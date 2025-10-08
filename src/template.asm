@@ -8,8 +8,6 @@ BITS 64
 
 _start:
 $main
-
-
 	mov rdi, rax
 	mov rax, 60
 	syscall
