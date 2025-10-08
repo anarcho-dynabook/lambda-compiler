@@ -36,24 +36,26 @@ struct Context {
 impl Expr {
     fn compile(&self, ctx: &mut Context) -> Result<String, String> {
         macro_rules! mnemonic {
-            ($asm: expr, $cmt: expr) => {
+            ($asm: expr => $cmt: expr) => {
                 format!("{INDENT}{:<16};{}\n", $asm, $cmt)
             };
         }
         match self {
             Expr::Variable(name) => Ok(mnemonic!(
-                format!("mov rax, {}", REGS[ctx.variable(name)?]),
-                format!("Load variable: {name}")
+                format!("mov rax, {}", REGS[ctx.variable(name)?])
+                => format!("Load variable: {name}")
             )),
-            Expr::Apply(la, arg) => Ok([
-                arg.compile(ctx)?,
-                mnemonic!("mov rbx, rax", format!("Argument: {arg}")),
-                mnemonic!("push rbx", "Migrate (protect from overwrite)"),
-                la.compile(ctx)?,
-                mnemonic!("pop rbx", "Reinstate in argument from stack"),
-                mnemonic!("call rax", format!("Apply lambda: {la}")),
-            ]
-            .concat()),
+            Expr::Apply(la, arg) => {
+                let arg = arg.compile(ctx)?;
+                la.compile(ctx)?;
+                Ok(format!(
+                    "{arg}{0}{1}{la}{2}{3}",
+                    mnemonic!("mov rbx, rax" => format!("Argument: {arg}")),
+                    mnemonic!("push rbx"     => "Migrate (protect from overwrite)"),
+                    mnemonic!("pop rbx"      => "Reinstate in argument from stack"),
+                    mnemonic!("call rax"     => format!("Apply lambda: {la}")),
+                ))
+            }
             Expr::Lambda(arg, body) => {
                 let id = ctx.id();
                 let original_env = ctx.env.clone();
