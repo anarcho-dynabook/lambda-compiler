@@ -40,7 +40,7 @@ impl Expr {
             ($asm: expr => $cmt: expr) => {
                 match ($asm.to_string().as_str(), $cmt.to_string().as_str()) {
                     (BLANK, cmt) => format!("{INDENT};;; {cmt}\n"),
-                    (asm, BLANK) => format!("{INDENT}{asm:<16}\n"),
+                    (asm, BLANK) => format!("{INDENT}{asm}\n"),
                     (asm, cmt) => format!("{INDENT}{asm:<16}; {cmt}\n"),
                 }
             };
