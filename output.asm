@@ -15,14 +15,14 @@ section .text
 _start:
 	mov rax, LA.0	; Store address of lambda
 	mov rbx, rax	; Argument: (λx.x)
-	push rbx		; Migrate to stack (protect from rewrite)
+	push rbx		; Migrate (protect from rewrite)
 	mov rax, LA.1	; Store address of lambda
 	mov rbx, rax	; Argument: (λf.(λx.(f(f(fx)))))
-	push rbx		; Migrate to stack (protect from rewrite)
+	push rbx		; Migrate (protect from rewrite)
 	mov rax, LA.3	; Store address of lambda
-	pop rbx			; Reinstate in argument
+	pop rbx			; Reinstate in argument from stack
 	call rax		; Apply lambda: (λx.(λf.(fx)))
-	pop rbx			; Reinstate in argument
+	pop rbx			; Reinstate in argument from stack
 	call rax		; Apply lambda: ((λx.(λf.(fx)))(λf.(λx.(f(f(fx))))))
 
 	mov rbx, church_decode
@@ -47,19 +47,19 @@ LA.2:
 	mov rdx, rbx	; Bind variable: x
 	mov rax, rdx	; Load variable x
 	mov rbx, rax	; Argument: x
-	push rbx		; Migrate to stack (protect from rewrite)
+	push rbx		; Migrate (protect from rewrite)
 	mov rax, rcx	; Load variable f
-	pop rbx			; Reinstate in argument
+	pop rbx			; Reinstate in argument from stack
 	call rax		; Apply lambda: f
 	mov rbx, rax	; Argument: (fx)
-	push rbx		; Migrate to stack (protect from rewrite)
+	push rbx		; Migrate (protect from rewrite)
 	mov rax, rcx	; Load variable f
-	pop rbx			; Reinstate in argument
+	pop rbx			; Reinstate in argument from stack
 	call rax		; Apply lambda: f
 	mov rbx, rax	; Argument: (f(fx))
-	push rbx		; Migrate to stack (protect from rewrite)
+	push rbx		; Migrate (protect from rewrite)
 	mov rax, rcx	; Load variable f
-	pop rbx			; Reinstate in argument
+	pop rbx			; Reinstate in argument from stack
 	call rax		; Apply lambda: f
 	ret
 
@@ -76,9 +76,9 @@ LA.4:
 	mov rdx, rbx	; Bind variable: f
 	mov rax, rcx	; Load variable x
 	mov rbx, rax	; Argument: x
-	push rbx		; Migrate to stack (protect from rewrite)
+	push rbx		; Migrate (protect from rewrite)
 	mov rax, rdx	; Load variable f
-	pop rbx			; Reinstate in argument
+	pop rbx			; Reinstate in argument from stack
 	call rax		; Apply lambda: f
 	ret
 
