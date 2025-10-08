@@ -5,7 +5,7 @@ section .text
 
 ; # Lambda Compiler ver.0.1
 ; RAX = value and callee lambda
-; RDX = argument when applying
+; RBX = argument when applying
 ; RCX-R15 = binding environment
 
 ; Source
