@@ -7,11 +7,10 @@
 
 _main:
 $main
-
 	lea rbx, [rel church_decode]
-	call stackframe
+	call rax
 	mov rbx, 0
-	call stackframe
+	call rax
 
 	mov rdi, rax
 	mov rax, 0x2000001

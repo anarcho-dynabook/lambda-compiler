@@ -66,6 +66,7 @@ fn parse_ident(chars: &mut Peekable<Chars>) -> Result<String, String> {
         if ch.is_alphanumeric() || ch == '_' {
             name.push(ch);
             chars.next();
+            break;
         } else {
             break;
         }
