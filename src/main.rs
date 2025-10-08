@@ -61,6 +61,7 @@ impl Expr {
                 let id = ctx.id();
                 let original_env = ctx.env.clone();
                 ctx.bind(arg);
+
                 let body = body.compile(ctx)?;
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{0}{1}{2}{body}\tret\n\n",
