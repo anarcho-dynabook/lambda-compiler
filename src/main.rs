@@ -82,7 +82,10 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(format!("\tmov rax, LA.{id}\t; Store address of lambda\n"))
+                Ok(mnemonic!(
+                    format!("mov rax, LA.{id}")
+                    => "Store address of lambda"
+                ))
             }
         }
     }
