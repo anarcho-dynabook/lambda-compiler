@@ -3,7 +3,10 @@ section .text
 	align 16
 	global _start
 
-; # Lambda Compiler ver.0.1
+; # Lambda Compiler [version 0.0.1; prealpha]
+; For x86_64 GNU/Linux only (tested in Ubuntu)
+; (a) Anti-Copyrights 2025, Remilia Darknets
+
 ; RAX = value and callee lambda
 ; RBX = argument when applying
 ; RCX-R15 = binding environment
@@ -19,7 +22,7 @@ $main
 	call rax        ; Decode to integer
 
 	mov rdi, rax    ; Return evaluated value
-	mov rax, 60     ; Exit (in the Linux only)
+	mov rax, 60     ; Exit
 	syscall
 
 $code
