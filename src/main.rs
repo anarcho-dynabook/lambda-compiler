@@ -10,7 +10,6 @@ fn main() {
         stdin().read_to_string(&mut buffer).unwrap();
         buffer.trim().to_owned()
     };
-    dbg!(&code);
     let output = build(&code).unwrap();
     stdout().write_all(output.as_bytes()).unwrap();
 }
