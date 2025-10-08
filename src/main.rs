@@ -47,7 +47,7 @@ impl Expr {
             )),
             Expr::Apply(la, arg) => {
                 let arg = arg.compile(ctx)?;
-                la.compile(ctx)?;
+                let la = la.compile(ctx)?;
                 Ok(format!(
                     "{arg}{0}{1}{la}{2}{3}",
                     mnemonic!("mov rbx, rax" => format!("Argument: {arg}")),
@@ -61,19 +61,23 @@ impl Expr {
                 let original_env = ctx.env.clone();
                 ctx.bind(arg);
                 let lambda_abstract = &format!(
-                    "LA.{id}:\n{}{}\tret\n\n",
+                    "LA.{id}:\n{}{}{}\tret\n\n",
                     format!(
-                        "\t; Lambda Abstract: {self}\n\t; Environment {{ {} }}\n\tmov {}, rbx\t; Bind variable: {arg}\n",
+                        "{INDENT}; Lambda Abstract: {self}\n{INDENT}; Environment {{ {} }}",
                         ctx.env
                             .iter()
                             .enumerate()
                             .map(|(i, x)| format!("{x}: {}", REGS[i]))
                             .collect::<Vec<_>>()
-                            .join(", "),
-                        REGS[ctx.variable(arg)?]
+                            .join(", ")
+                    ),
+                    mnemonic!(
+                        format!("mov {}, rbx", REGS[ctx.variable(arg)?])
+                        => format!("Bind variable: {arg}")
                     ),
                     body.compile(ctx)?
                 );
+
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
                 Ok(format!("\tmov rax, LA.{id}\t; Store address of lambda\n"))
