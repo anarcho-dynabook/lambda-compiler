@@ -1,6 +1,6 @@
 #  Lambda Compiler for x86_64 Linux
 
-```
+```nasm
 BITS 64
 section .text
 	align 16
