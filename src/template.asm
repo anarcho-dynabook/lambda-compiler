@@ -3,6 +3,10 @@ section .text
 	align 16
 	global _start
 
+; # Lambda Compiler ver.0.1
+; RAX = value and callee lambda
+; RDX = argument when applying
+
 ; Source
 ; $src
 
