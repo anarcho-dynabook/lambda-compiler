@@ -36,15 +36,12 @@ struct Context {
 impl Expr {
     fn compile(&self, ctx: &mut Context) -> Result<String, String> {
         match self {
-            Expr::Variable(name) => {
-                if let Some(reg) = REGS.get(ctx.variable(name)?) {
-                    Ok(format!("\tmov rax, {reg}\n"))
-                } else {
-                    Ok(format!("\tpop rax\n"))
-                }
-            }
+            Expr::Variable(name) => Ok(format!(
+                "\tmov rax, {}\t; load variable `{name}`\n",
+                REGS[ctx.variable(name)?],
+            )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\n{}\tcall rax\n",
+                "\t; == arguments ==\n{}\tmov rbx, rax\n\t; == Lambda abstract ==\n{}\tcall rax\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -54,11 +51,7 @@ impl Expr {
                 let original_env = ctx.env.clone();
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
-                    if let Some(reg) = REGS.get(ctx.variable(arg)?) {
-                        format!("\tmov {reg}, rbx\n")
-                    } else {
-                        format!("\tpush rbx\n")
-                    },
+                    format!("\tmov {}, rbx\t; Bind variable\n", REGS[ctx.variable(arg)?]),
                     body.compile(ctx)?
                 );
                 ctx.code += lambda_abstract;
