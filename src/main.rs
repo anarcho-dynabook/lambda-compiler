@@ -42,9 +42,9 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\{}\tmov rbx, rax\n\tpop rax\n\tcall stackframe\n",
-                la.compile(ctx)?,
+                "{}\tmov rbx, rax\n{}\tcall stackframe\n",
                 arg.compile(ctx)?,
+                la.compile(ctx)?,
             )),
             Expr::Lambda(arg, body) => {
                 let id = ctx.id();

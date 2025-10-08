@@ -3,19 +3,12 @@
 	global _main
 
 ; Source
-; (\m.\n.\f.m (n f)) (\f.\x.f (f (f x))) (\f.\x.f (f x))
+; (\n.\f.\x.f (n f x)) (\f.\x.f (f x))
 
 _main:
 	lea rax, [rel LA.0]
-	push rax
-	lea rax, [rel LA.3]
 	mov rbx, rax
-	pop rax
-	call stackframe
-	push rax
-	lea rax, [rel LA.5]
-	mov rbx, rax
-	pop rax
+	lea rax, [rel LA.2]
 	call stackframe
 
 
@@ -28,81 +21,49 @@ _main:
 	mov rax, 0x2000001
 	syscall
 
-LA.2:
-	; Environment: "m: rcx, n: rdx, f: rsi"
-	mov rsi, rbx	; Bind variable `f`
-	mov rax, rcx	; load variable `m`
-	push rax
-	mov rax, rdx	; load variable `n`
-	push rax
-	mov rax, rsi	; load variable `f`
-	mov rbx, rax
-	pop rax
-	call stackframe
-	mov rbx, rax
-	pop rax
-	call stackframe
-	ret
-
 LA.1:
-	; Environment: "m: rcx, n: rdx"
-	mov rdx, rbx	; Bind variable `n`
-	lea rax, [rel LA.2]
+	; Environment: "f: rcx, x: rdx"
+	mov rdx, rbx	; Bind variable `x`
+	mov rax, rdx	; load variable `x`
+	mov rbx, rax
+	mov rax, rcx	; load variable `f`
+	call stackframe
+	mov rbx, rax
+	mov rax, rcx	; load variable `f`
+	call stackframe
 	ret
 
 LA.0:
-	; Environment: "m: rcx"
-	mov rcx, rbx	; Bind variable `m`
+	; Environment: "f: rcx"
+	mov rcx, rbx	; Bind variable `f`
 	lea rax, [rel LA.1]
 	ret
 
 LA.4:
-	; Environment: "m: rcx, f: rdx, x: rsi"
+	; Environment: "f: rcx, n: rdx, x: rsi"
 	mov rsi, rbx	; Bind variable `x`
-	mov rax, rdx	; load variable `f`
-	push rax
-	mov rax, rdx	; load variable `f`
-	push rax
-	mov rax, rdx	; load variable `f`
-	push rax
 	mov rax, rsi	; load variable `x`
 	mov rbx, rax
-	pop rax
+	mov rax, rcx	; load variable `f`
+	mov rbx, rax
+	mov rax, rdx	; load variable `n`
+	call stackframe
 	call stackframe
 	mov rbx, rax
-	pop rax
-	call stackframe
-	mov rbx, rax
-	pop rax
+	mov rax, rcx	; load variable `f`
 	call stackframe
 	ret
 
 LA.3:
-	; Environment: "m: rcx, f: rdx"
-	mov rdx, rbx	; Bind variable `f`
+	; Environment: "f: rcx, n: rdx"
+	mov rcx, rbx	; Bind variable `f`
 	lea rax, [rel LA.4]
 	ret
 
-LA.6:
-	; Environment: "m: rcx, f: rdx, x: rsi"
-	mov rsi, rbx	; Bind variable `x`
-	mov rax, rdx	; load variable `f`
-	push rax
-	mov rax, rdx	; load variable `f`
-	push rax
-	mov rax, rsi	; load variable `x`
-	mov rbx, rax
-	pop rax
-	call stackframe
-	mov rbx, rax
-	pop rax
-	call stackframe
-	ret
-
-LA.5:
-	; Environment: "m: rcx, f: rdx"
-	mov rdx, rbx	; Bind variable `f`
-	lea rax, [rel LA.6]
+LA.2:
+	; Environment: "f: rcx, n: rdx"
+	mov rdx, rbx	; Bind variable `n`
+	lea rax, [rel LA.3]
 	ret
 
 
@@ -111,6 +72,7 @@ stackframe:
     push rbp
     mov rbp, rsp
 
+    push rbx
     push rcx
     push rdx
     push rsi
@@ -138,8 +100,10 @@ stackframe:
     pop rsi
     pop rdx
     pop rcx
+    pop rbx
 
-    leave
+    mov rsp, rbp
+    pop rbp
     ret
 
 church_decode:

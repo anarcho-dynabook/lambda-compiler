@@ -23,6 +23,7 @@ stackframe:
     push rbp
     mov rbp, rsp
 
+    push rbx
     push rcx
     push rdx
     push rsi
@@ -50,8 +51,10 @@ stackframe:
     pop rsi
     pop rdx
     pop rcx
+    pop rbx
 
-    leave
+    mov rsp, rbp
+    pop rbp
     ret
 
 church_decode:
