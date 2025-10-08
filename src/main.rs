@@ -1,7 +1,10 @@
 mod parse;
 
 fn main() {
-    println!("{}", build(r#"(\f. \x. f (f (f x)))"#).unwrap())
+    println!(
+        "{}",
+        build(r#"(\m.\n.\f.m (n f)) (\f.\x.f (f (f x))) (\f.\x.f (f x))"#).unwrap()
+    )
 }
 
 fn build(source: &str) -> Result<String, String> {

@@ -4,6 +4,12 @@
 
 _main:
 	lea rax, [rel LA.0]
+	mov rbx, rax
+	lea rax, [rel LA.2]
+	mov rbx, rax
+	lea rax, [rel LA.4]
+	call rax
+	call rax
 
 
 	mov rbx, church_decode
@@ -24,14 +30,51 @@ LA.1:
 	mov rbx, rax
 	mov rax, rcx
 	call rax
-	mov rbx, rax
-	mov rax, rcx
-	call rax
 	ret
 
 LA.0:
 	mov rcx, rbx
 	lea rax, [rel LA.1]
+	ret
+
+LA.3:
+	mov rsi, rbx
+	mov rax, rsi
+	mov rbx, rax
+	mov rax, rcx
+	call rax
+	mov rbx, rax
+	mov rax, rcx
+	call rax
+	mov rbx, rax
+	mov rax, rcx
+	call rax
+	ret
+
+LA.2:
+	mov rcx, rbx
+	lea rax, [rel LA.3]
+	ret
+
+LA.6:
+	mov rcx, rbx
+	mov rax, rcx
+	mov rbx, rax
+	mov rax, rdi
+	call rax
+	mov rbx, rax
+	mov rax, rsi
+	call rax
+	ret
+
+LA.5:
+	mov rdi, rbx
+	lea rax, [rel LA.6]
+	ret
+
+LA.4:
+	mov rsi, rbx
+	lea rax, [rel LA.5]
 	ret
 
 
