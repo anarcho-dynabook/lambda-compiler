@@ -1,7 +1,7 @@
 BITS 64
 section .text
-	align 16
-	global _start
+    align 16
+    global _start
 
 ; # Lambda Compiler [version 0.0.1; prealpha]
 ; For x86_64 GNU/Linux only (tested in Ubuntu)
@@ -16,18 +16,18 @@ section .text
 
 _start:
 $main
-	mov rbx, church_decode
-	call rax        ; Partial apply
-	mov rbx, 0      ; Initial value
-	call rax        ; Decode to integer
+    mov rbx, church_decode
+    call rax        ; Partial apply
+    mov rbx, 0      ; Initial value
+    call rax        ; Decode to integer
 
-	mov rdi, rax    ; Return evaluated value
-	mov rax, 60     ; Exit
-	syscall
+    mov rdi, rax    ; Return evaluated value
+    mov rax, 60     ; Exit
+    syscall
 
 $code
 
 church_decode:
     mov rax, rbx
-	add rax, 1
-	ret
+    add rax, 1
+    ret
