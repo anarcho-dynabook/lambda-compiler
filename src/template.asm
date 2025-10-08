@@ -1,5 +1,5 @@
 BITS 64
-.text:
+.text
 	align 16
 	global _start
 
@@ -8,6 +8,11 @@ BITS 64
 
 _start:
 $main
+	mov rbx, church_decode
+	call rax
+	mov rbx, 0
+	call rax
+
 	mov rdi, rax
 	mov rax, 60
 	syscall
