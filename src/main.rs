@@ -1,7 +1,16 @@
-use indexmap::IndexMap;
+mod parse;
 
 fn main() {
-    println!("Hello, world!");
+    println!("{}", build(r#"(\x.x x) (\x. x)"#).unwrap())
+}
+
+fn build(source: &str) -> Result<String, String> {
+    let ctx = &mut Context::default();
+    let code = Expr::parse(source)?.compile(ctx)?;
+    Ok(format!(
+        "_main:\n{code}\nmov rax, 0x2000001\n\tmov rdi, 0\n\tsyscall\n\n{}",
+        ctx.code
+    ))
 }
 
 const REGS: [&str; 13] = [
@@ -9,13 +18,13 @@ const REGS: [&str; 13] = [
 ];
 
 #[derive(Clone, Debug)]
-enum Expr {
+pub enum Expr {
     Variable(String),
     Apply(Box<Expr>, Box<Expr>),
     Lambda(String, Box<Expr>),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 struct Context {
     id: usize,
     code: String,
@@ -23,16 +32,16 @@ struct Context {
 }
 
 impl Expr {
-    fn compile(&self, ctx: &mut Context) -> Option<String> {
+    fn compile(&self, ctx: &mut Context) -> Result<String, String> {
         match self {
             Expr::Variable(name) => {
                 if let Some(reg) = REGS.get(ctx.variable(name)?) {
-                    Some(format!("\tmov rax, {reg}\n"))
+                    Ok(format!("\tmov rax, {reg}\n"))
                 } else {
-                    Some(format!("\tpop rax\n"))
+                    Ok(format!("\tpop rax\n"))
                 }
             }
-            Expr::Apply(la, arg) => Some(format!(
+            Expr::Apply(la, arg) => Ok(format!(
                 "{}\tmov rdx, rax\n{}\tcall rax\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
@@ -42,7 +51,7 @@ impl Expr {
                 let frame = &mut ctx.clone();
                 frame.env.push(arg.clone());
                 ctx.code += &format!("LA.{id}:\n{}\tret\n\n", body.compile(frame)?);
-                Some(format!("\tmov rax, LA.{id}\n"))
+                Ok(format!("\tmov rax, LA.{id}\n"))
             }
         }
     }
@@ -55,7 +64,11 @@ impl Context {
         id
     }
 
-    fn variable(&mut self, name: &str) -> Option<usize> {
-        self.env.iter().position(|x| x == name)
+    fn variable(&mut self, name: &str) -> Result<usize, String> {
+        if let Some(var) = self.env.iter().position(|x| x == name) {
+            Ok(var)
+        } else {
+            Err(format!("undefine variable: {name}"))
+        }
     }
 }
