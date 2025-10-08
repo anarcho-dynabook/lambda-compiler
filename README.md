@@ -1,2 +1,1 @@
-# Lambda Compiler
-for Linux
+#  Lambda Compiler for x86_64 Linux 
