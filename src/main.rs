@@ -1,4 +1,6 @@
+use parse::{BLANK, INDENT};
 use std::fmt::{self, Display};
+
 mod parse;
 
 fn main() {
@@ -13,9 +15,6 @@ fn build(source: &str) -> Result<String, String> {
         .replace("$main", &code)
         .replace("$code", &ctx.code))
 }
-
-const INDENT: &str = "    ";
-const BLANK: &str = "    ";
 
 const REGS: [&str; 12] = [
     "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
@@ -62,27 +61,23 @@ impl Expr {
                 let id = ctx.id();
                 let original_env = ctx.env.clone();
                 ctx.bind(arg);
+                let body = body.compile(ctx)?;
                 let lambda_abstract = &format!(
-                    "LA.{id}:\n{}{}{}\tret\n\n",
-                    mnemonic!(
-                        BLANK => format!("Lambda Abstract: {self}")
-
-                    ),
-                    mnemonic!(
-                        BLANK =>  format!("Environment {{ {} }}",
-                    ctx.env
-                        .iter()
-                        .enumerate()
-                        .map(|(i, x)| format!("{x}: {}", REGS[i]))
-                        .collect::<Vec<_>>()
-                        .join(", "))),
+                    "LA.{id}:\n{0}{1}{2}{body}\tret\n\n",
+                    mnemonic!(BLANK => format!("Lambda Abstract: {self}")),
+                    mnemonic!(BLANK =>  format!("Environment {{ {} }}",
+                        ctx.env
+                            .iter()
+                            .enumerate()
+                            .map(|(i, x)| format!("{x}: {}", REGS[i]))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    )),
                     mnemonic!(
                         format!("mov {}, rbx", REGS[ctx.variable(arg)?])
                         => format!("Bind variable: {arg}")
-                    ),
-                    body.compile(ctx)?
+                    )
                 );
-
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
                 Ok(format!("\tmov rax, LA.{id}\t; Store address of lambda\n"))
