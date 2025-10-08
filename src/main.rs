@@ -42,7 +42,7 @@ impl Expr {
                 }
             }
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\n{}\tcall rax\n",
+                "{}\tmov rdx, rax\n{}\tcall rax\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -51,7 +51,7 @@ impl Expr {
                 let frame = &mut ctx.clone();
                 frame.env.push(arg.clone());
                 ctx.code += &format!(
-                    "LA.{id}:{}{}\tret\n\n",
+                    "LA.{id}:\n{}{}\tret\n\n",
                     if let Some(reg) = REGS.get(frame.variable(arg)?) {
                         format!("\tmov {reg}, rdx\n")
                     } else {

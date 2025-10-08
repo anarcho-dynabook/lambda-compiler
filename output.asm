@@ -3,7 +3,7 @@
 	global _main
 _main:
 	lea rax, [rel LA.0]
-	mov rbx, rax
+	mov rdx, rax
 	lea rax, [rel LA.1]
 	call rax
 
@@ -11,13 +11,15 @@ _main:
 	mov rax, 0x2000001
 	syscall
 
-LA.0:	mov rbx, rdx
+LA.0:
+	mov rbx, rdx
 	mov rax, rbx
 	ret
 
-LA.1:	mov rbx, rdx
+LA.1:
+	mov rbx, rdx
 	mov rax, rbx
-	mov rbx, rax
+	mov rdx, rax
 	mov rax, rbx
 	call rax
 	ret
