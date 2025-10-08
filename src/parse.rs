@@ -1,9 +1,9 @@
-use crate::*;
+use crate::Expr;
 use std::iter::Peekable;
 use std::str::Chars;
 
-const INDENT: &str = "    ";
-const BLANK: &str = "";
+pub const INDENT: &str = "    ";
+pub const BLANK: &str = "";
 
 impl Expr {
     pub fn parse(input: &str) -> Result<Expr, String> {
@@ -55,7 +55,7 @@ fn parse_lambda(chars: &mut Peekable<Chars>) -> Result<Expr, String> {
         _ => return Err("Expected '.' after lambda parameter".to_string()),
     }
     let body = parse_expr(chars)?;
-    Ok(Expr::Lambda(var, Box::new(body)))
+    Ok(Expr::Lambda(var.to_string(), Box::new(body)))
 }
 
 fn parse_variable(chars: &mut Peekable<Chars>) -> Result<Expr, String> {
