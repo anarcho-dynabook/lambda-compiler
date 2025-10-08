@@ -1,19 +1,20 @@
+BITS 64
 .text:
 	align 16
-	global _main
+	global _start
 
 ; Source
 ; $src
 
-_main:
+_start:
 $main
-	lea rbx, [rel church_decode]
+	mov rbx, church_decode
 	call stackframe
 	mov rbx, 0
-	call stackframe
+	call rax
 
 	mov rdi, rax
-	mov rax, 0x2000001
+	mov rax, 60
 	syscall
 
 $code
