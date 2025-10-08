@@ -4,15 +4,16 @@ section .text
     global _start
 
 ; # Lambda Compiler [version 0.0.1; prealpha]
-; For x86_64 GNU/Linux only (tested in Ubuntu)
+; For x86_64 GNU/Linux only (tested in Lubuntu)
 ; (a) Anti-Copyrights 2025, Remilia Darknets
 
 ; RAX = value and callee lambda
 ; RBX = argument when applying
 ; RCX-R15 = binding environment
 
-; Source
-; $src
+; Source (the expression of Lambda calculus)
+; This assembly code is generated from that
+; >>> $src
 
 _start:
 $main
