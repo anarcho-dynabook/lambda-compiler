@@ -8,10 +8,7 @@ BITS 64
 
 _start:
 $main
-	mov rbx, church_decode
-	call rax
-	mov rbx, 0
-	call rax
+
 
 	mov rdi, rax
 	mov rax, 60
