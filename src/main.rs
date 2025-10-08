@@ -1,7 +1,10 @@
 mod parse;
 
 fn main() {
-    println!("{}", build(r#"(\n.\f.\x.f(nfx)) (\f.\x.f (f x))"#).unwrap())
+    println!(
+        "{}",
+        build(r#"(\n.\f.\x.f (n f x)) (\f.\x.f (f x))"#).unwrap()
+    )
 }
 
 fn build(source: &str) -> Result<String, String> {
@@ -39,7 +42,7 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tpush rax\n{}\tmov rbx, rax\n\tpop rax\n\tcall stackframe\n",
+                "{}\{}\tmov rbx, rax\n\tpop rax\n\tcall stackframe\n",
                 la.compile(ctx)?,
                 arg.compile(ctx)?,
             )),
