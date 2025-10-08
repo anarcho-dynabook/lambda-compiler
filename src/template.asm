@@ -6,15 +6,17 @@ _main:
 $main
 
 	mov rbx, church_decode
-	mov r15, 0
+	call rax
+	mov rbx, 0
 	call rax
 
-	mov rdi, r15
+	mov rdi, rax
 	mov rax, 0x2000001
 	syscall
 
 $code
 
 church_decode:
-	add r15, 1
+    mov rax, rbx
+	add rax, 1
 	ret

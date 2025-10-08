@@ -7,16 +7,20 @@ _main:
 
 
 	mov rbx, church_decode
-	mov r15, 0
+	call rax
+	mov rbx, 0
 	call rax
 
-	mov rdi, r15
+	mov rdi, rax
 	mov rax, 0x2000001
 	syscall
 
 LA.1:
 	mov rdx, rbx
 	mov rax, rdx
+	mov rbx, rax
+	mov rax, rcx
+	call rax
 	mov rbx, rax
 	mov rax, rcx
 	call rax
@@ -33,6 +37,7 @@ LA.0:
 
 
 church_decode:
-	add r15, 1
+    mov rax, rbx
+	add rax, 1
 	ret
 
