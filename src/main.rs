@@ -14,6 +14,7 @@ fn build(source: &str) -> Result<String, String> {
         .replace("$code", &ctx.code))
 }
 
+const INDENT: &str = "    ";
 const REGS: [&str; 12] = [
     "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 ];
@@ -34,13 +35,18 @@ struct Context {
 
 impl Expr {
     fn compile(&self, ctx: &mut Context) -> Result<String, String> {
+        macro_rules! mnemonic {
+            ($asm: expr, $cmt: expr) => {
+                format!("{INDENT}{<16};{cmt}\n", $asm, $cmt)
+            };
+        }
         match self {
-            Expr::Variable(name) => Ok(format!(
-                "\tmov rax, {}\t; Load variable: {name}\n",
-                REGS[ctx.variable(name)?],
+            Expr::Variable(name) => Ok(mnemonic!(
+                format!("\tmov rax, {}\t", REGS[ctx.variable(name)?],)
+                format!( "Load variable: {name}")
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\t; Argument: {arg}\n\tpush rbx\t\t; Migrate (protect from rewrite)\n{}\tpop rbx\t\t\t; Reinstate in argument from stack\n\tcall rax\t\t; Apply lambda: {la}\n",
+                "{}\tmov rbx, rax\t; Argument: {arg}\n\tpush rbx\t\t; Migrate (protect from overwrite)\n{}\tpop rbx\t\t\t; Reinstate in argument from stack\n\tcall rax\t\t; Apply lambda: {la}\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
