@@ -1,7 +1,7 @@
 mod parse;
 
 fn main() {
-    println!("{}", build(r#"(\x.x x) (\x. x)"#).unwrap())
+    println!("{}", build(r#"(\f. \x. x x)"#).unwrap())
 }
 
 fn build(source: &str) -> Result<String, String> {
@@ -48,17 +48,19 @@ impl Expr {
             )),
             Expr::Lambda(arg, body) => {
                 let id = ctx.id();
-                let frame = &mut ctx.clone();
-                frame.env.push(arg.clone());
-                ctx.code += &format!(
+                ctx.env.push(arg.clone());
+                let original_env = ctx.env.clone();
+                let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
-                    if let Some(reg) = REGS.get(frame.variable(arg)?) {
+                    if let Some(reg) = REGS.get(ctx.variable(arg)?) {
                         format!("\tmov {reg}, rdx\n")
                     } else {
                         format!("\tpush rdx\n")
                     },
-                    body.compile(frame)?
+                    body.compile(ctx)?
                 );
+                ctx.code += lambda_abstract;
+                ctx.env = original_env;
                 Ok(format!("\tlea rax, [rel LA.{id}]\n"))
             }
         }
