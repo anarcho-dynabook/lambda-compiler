@@ -2,6 +2,9 @@ use crate::*;
 use std::iter::Peekable;
 use std::str::Chars;
 
+const INDENT: &str = "    ";
+const BLANK: &str = "    ";
+
 impl Expr {
     pub fn parse(input: &str) -> Result<Expr, String> {
         let mut chars = input.chars().peekable();
@@ -57,24 +60,20 @@ fn parse_lambda(chars: &mut Peekable<Chars>) -> Result<Expr, String> {
 
 fn parse_variable(chars: &mut Peekable<Chars>) -> Result<Expr, String> {
     let name = parse_ident(chars)?;
-    Ok(Expr::Variable(name))
+    Ok(Expr::Variable(name.to_string()))
 }
 
-fn parse_ident(chars: &mut Peekable<Chars>) -> Result<String, String> {
-    let mut name = String::new();
-    while let Some(&ch) = chars.peek() {
-        if ch.is_alphanumeric() || ch == '_' {
-            name.push(ch);
+fn parse_ident(chars: &mut Peekable<Chars>) -> Result<char, String> {
+    let err = Err("Expected identifier".to_string());
+    if let Some(&ch) = chars.peek() {
+        if ch.is_alphanumeric() {
             chars.next();
-            break;
+            Ok(ch)
         } else {
-            break;
+            err
         }
-    }
-    if name.is_empty() {
-        Err("Expected identifier".to_string())
     } else {
-        Ok(name)
+        err
     }
 }
 
