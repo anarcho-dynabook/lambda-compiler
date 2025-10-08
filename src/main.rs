@@ -40,7 +40,7 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rbx, rax\t; Argument: {arg}\n\tpush rbx\t\t; Migrate to stack\n{}\tpop rbx\t\t; Reinstate in argument\n\tcall rax\t\t; Apply lambda: {la}\n",
+                "{}\tmov rbx, rax\t; Argument: {arg}\n\tpush rbx\t\t; Migrate to stack\n{}\tpop rbx\t\t\t; Reinstate in argument\n\tcall rax\t\t; Apply lambda: {la}\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -64,7 +64,7 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(format!("\tmov rax, LA.{id}\n"))
+                Ok(format!("\tmov rax, LA.{id}\t; Store address of lambda\n"))
             }
         }
     }
