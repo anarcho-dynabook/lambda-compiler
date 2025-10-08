@@ -63,7 +63,7 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(format!("\tlea rax, [rel LA.{id}]\n"))
+                Ok(format!("\tmov rax, LA.{id}\n"))
             }
         }
     }

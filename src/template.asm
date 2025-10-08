@@ -8,9 +8,9 @@
 _main:
 $main
 	lea rbx, [rel church_decode]
-	call rax
+	call stackframe
 	mov rbx, 0
-	call rax
+	call stackframe
 
 	mov rdi, rax
 	mov rax, 0x2000001
@@ -22,7 +22,6 @@ stackframe:
     push rbp
     mov rbp, rsp
 
-    push rbx
     push rcx
     push rdx
     push rsi
@@ -50,7 +49,6 @@ stackframe:
     pop rsi
     pop rdx
     pop rcx
-    pop rbx
 
     mov rsp, rbp
     pop rbp

@@ -3,19 +3,16 @@
 	global _main
 
 ; Source
-; (\n.\f.\x.f(nfx)) (\f.\x.f(f(fx)))
+; (\f.\x.f(f(fx)))
 
 
 _main:
-	lea rax, [rel LA.0]
-	mov rbx, rax
-	lea rax, [rel LA.2]
-	call stackframe
+	mov rax, LA.0
 
 	lea rbx, [rel church_decode]
-	call rax
+	call stackframe
 	mov rbx, 0
-	call rax
+	call stackframe
 
 	mov rdi, rax
 	mov rax, 0x2000001
@@ -39,34 +36,7 @@ LA.1:
 LA.0:
 	; Environment: "f: rcx"
 	mov rcx, rbx	; Bind variable `f`
-	lea rax, [rel LA.1]
-	ret
-
-LA.4:
-	; Environment: "n: rcx, f: rdx, x: rsi"
-	mov rsi, rbx	; Bind variable `x`
-	mov rax, rsi	; load variable `x`
-	mov rbx, rax
-	mov rax, rdx	; load variable `f`
-	mov rbx, rax
-	mov rax, rcx	; load variable `n`
-	call stackframe
-	call stackframe
-	mov rbx, rax
-	mov rax, rdx	; load variable `f`
-	call stackframe
-	ret
-
-LA.3:
-	; Environment: "n: rcx, f: rdx"
-	mov rdx, rbx	; Bind variable `f`
-	lea rax, [rel LA.4]
-	ret
-
-LA.2:
-	; Environment: "n: rcx"
-	mov rcx, rbx	; Bind variable `n`
-	lea rax, [rel LA.3]
+	mov rax, LA.1
 	ret
 
 
@@ -75,7 +45,6 @@ stackframe:
     push rbp
     mov rbp, rsp
 
-    push rbx
     push rcx
     push rdx
     push rsi
@@ -103,7 +72,6 @@ stackframe:
     pop rsi
     pop rdx
     pop rcx
-    pop rbx
 
     mov rsp, rbp
     pop rbp
