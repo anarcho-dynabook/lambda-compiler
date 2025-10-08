@@ -1,5 +1,5 @@
 BITS 64
-.text:
+.text
 	align 16
 	global _start
 
