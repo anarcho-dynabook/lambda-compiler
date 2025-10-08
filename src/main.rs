@@ -45,8 +45,8 @@ impl Expr {
             )),
             Expr::Lambda(arg, body) => {
                 let id = ctx.id();
-                ctx.bind(arg);
                 let original_env = ctx.env.clone();
+                ctx.bind(arg);
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
                     format!(

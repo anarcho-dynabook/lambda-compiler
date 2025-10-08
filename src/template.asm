@@ -8,10 +8,10 @@
 _main:
 $main
 
-	mov rbx, church_decode
-	call rax
+	lea rbx, [rel church_decode]
+	call stackframe
 	mov rbx, 0
-	call rax
+	call stackframe
 
 	mov rdi, rax
 	mov rax, 0x2000001

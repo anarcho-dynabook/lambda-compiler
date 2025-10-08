@@ -3,17 +3,20 @@
 	global _main
 
 ; Source
-; (\f.\x.f(f(f x)))
+; (\x.x) (\f.\x.f(f(f x)))
 
 
 _main:
 	lea rax, [rel LA.0]
+	mov rbx, rax
+	lea rax, [rel LA.2]
+	call stackframe
 
 
-	mov rbx, church_decode
-	call rax
-	mov rbx, 0
-	call rax
+	lea rbx, [rel church_decode]
+	call stackframe
+	mov rbx, 1
+	call stackframe
 
 	mov rdi, rax
 	mov rax, 0x2000001
@@ -38,6 +41,12 @@ LA.0:
 	; Environment: "f: rcx"
 	mov rcx, rbx	; Bind variable `f`
 	lea rax, [rel LA.1]
+	ret
+
+LA.2:
+	; Environment: "x: rcx"
+	mov rcx, rbx	; Bind variable `x`
+	mov rax, rcx	; load variable `x`
 	ret
 
 
