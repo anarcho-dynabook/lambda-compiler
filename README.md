@@ -16,7 +16,6 @@ section .text
 ; This assembly code is generated from that
 ; >>> (λx.λf.fx) (λf.λx.f(f(fx))) (\x.x)
 
-
 _start:
     mov rax, LA.0   ; Store address of lambda
     mov rbx, rax    ; Argument: (λx.x)
