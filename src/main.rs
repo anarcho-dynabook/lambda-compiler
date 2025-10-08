@@ -1,17 +1,29 @@
 use parse::{BLANK, INDENT};
 use std::fmt::{self, Display};
 use std::io::{Read, Write, stdin, stdout};
+use std::process::exit;
 
 mod parse;
 
 fn main() {
+    macro_rules! error {
+        ($value: expr) => {
+            match $value {
+                Ok(value) => value,
+                Err(err) => {
+                    eprintln!("{err}");
+                    exit(1)
+                }
+            }
+        };
+    }
     let code = {
         let mut buffer = String::new();
-        stdin().read_to_string(&mut buffer).unwrap();
+        error!(stdin().read_to_string(&mut buffer));
         buffer.trim().to_owned()
     };
-    let output = build(&code).unwrap();
-    stdout().write_all(output.as_bytes()).unwrap();
+    let output = error!(build(&code));
+    error!(stdout().write_all(output.as_bytes()));
 }
 
 fn build(source: &str) -> Result<String, String> {
