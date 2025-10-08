@@ -7,6 +7,9 @@ pub const BLANK: &str = "";
 
 impl Expr {
     pub fn parse(input: &str) -> Result<Expr, String> {
+        if input.trim().is_empty() {
+            return Err("Source code is empty".to_owned());
+        }
         let mut chars = input.chars().peekable();
         parse_expr(&mut chars)
     }
