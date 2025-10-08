@@ -51,7 +51,7 @@ impl Expr {
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
                     format!(
-                        "\t; Lambda Abstract {self}\n\t; Environment: {{ {} }}\n\tmov {}, rbx\t; Bind variable: {arg}\n",
+                        "\t; Lambda Abstract: {self}\n\t; Environment: {{ {} }}\n\tmov {}, rbx\t; Bind variable: {arg}\n",
                         ctx.env
                             .iter()
                             .enumerate()
