@@ -41,7 +41,7 @@ impl Expr {
                 REGS[ctx.variable(name)?],
             )),
             Expr::Apply(la, arg) => Ok(format!(
-                "\t; == arguments ==\n{}\tmov rbx, rax\n\t; == Lambda abstract ==\n{}\tcall rax\n",
+                "{}\tmov rbx, rax\n{}\tpop rax\n\tcall rax\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -56,7 +56,7 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(format!("\tlea rax, [rel LA.{id}]\n"))
+                Ok(format!("\tpush rax\n\tlea rax, [rel LA.{id}]\n"))
             }
         }
     }
