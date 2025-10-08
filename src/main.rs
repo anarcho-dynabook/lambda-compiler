@@ -15,6 +15,8 @@ fn build(source: &str) -> Result<String, String> {
 }
 
 const INDENT: &str = "    ";
+const BLANK: &str = "    ";
+
 const REGS: [&str; 12] = [
     "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 ];
@@ -62,15 +64,18 @@ impl Expr {
                 ctx.bind(arg);
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}{}\tret\n\n",
-                    format!(
-                        "{INDENT}; Lambda Abstract: {self}\n{INDENT}; Environment {{ {} }}",
-                        ctx.env
-                            .iter()
-                            .enumerate()
-                            .map(|(i, x)| format!("{x}: {}", REGS[i]))
-                            .collect::<Vec<_>>()
-                            .join(", ")
+                    mnemonic!(
+                        BLANK => format!("Lambda Abstract: {self}")
+
                     ),
+                    mnemonic!(
+                        BLANK =>  format!("Environment {{ {} }}",
+                    ctx.env
+                        .iter()
+                        .enumerate()
+                        .map(|(i, x)| format!("{x}: {}", REGS[i]))
+                        .collect::<Vec<_>>()
+                        .join(", "))),
                     mnemonic!(
                         format!("mov {}, rbx", REGS[ctx.variable(arg)?])
                         => format!("Bind variable: {arg}")
