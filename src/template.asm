@@ -5,7 +5,7 @@
 _main:
 $main
 
-	mov rdx, church_decode
+	mov rbx, church_decode
 	mov r15, 0
 	call rax
 

@@ -1,20 +1,19 @@
 mod parse;
 
 fn main() {
-    println!("{}", build(r#"(\f. \x. x x)"#).unwrap())
+    println!("{}", build(r#"(\f. \x. f (f x))"#).unwrap())
 }
 
 fn build(source: &str) -> Result<String, String> {
     let ctx = &mut Context::default();
     let code = Expr::parse(source)?.compile(ctx)?;
-    Ok(format!(
-        ".text:\n\talign 16\n\tglobal _main\n_main:\n{code}\n\tmov rdi, rax\n\tmov rax, 0x2000001\n\tsyscall\n\n{}",
-        ctx.code
-    ))
+    Ok(include_str!("template.asm")
+        .replace("$main", &code)
+        .replace("$code", &ctx.code))
 }
 
-const REGS: [&str; 13] = [
-    "rbx", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+const REGS: [&str; 12] = [
+    "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 ];
 
 #[derive(Clone, Debug)]
@@ -42,7 +41,7 @@ impl Expr {
                 }
             }
             Expr::Apply(la, arg) => Ok(format!(
-                "{}\tmov rdx, rax\n{}\tcall rax\n",
+                "{}\tmov rbx, rax\n{}\tcall rax\n",
                 arg.compile(ctx)?,
                 la.compile(ctx)?,
             )),
@@ -53,9 +52,9 @@ impl Expr {
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{}{}\tret\n\n",
                     if let Some(reg) = REGS.get(ctx.variable(arg)?) {
-                        format!("\tmov {reg}, rdx\n")
+                        format!("\tmov {reg}, rbx\n")
                     } else {
-                        format!("\tpush rdx\n")
+                        format!("\tpush rbx\n")
                     },
                     body.compile(ctx)?
                 );
