@@ -18,7 +18,7 @@ section .text
 _start:
 $main
     mov rbx, church_decode
-    call rax
+    call rax            ; Partial apply
     mov rbx, 0          ; Initial value
     call rax            ; Decode to integer
 
