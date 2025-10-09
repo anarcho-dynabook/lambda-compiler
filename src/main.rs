@@ -87,7 +87,7 @@ impl Expr {
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{0}{1}{2}{body}{3}\n",
                     mnemonic!(BLANK => format!("Lambda Abstract: {self}")),
-                    mnemonic!(BLANK =>  format!("Environment {{ {} }}",
+                    mnemonic!(BLANK => format!("Environment {{ {} }}",
                         ctx.env
                             .iter()
                             .enumerate()
