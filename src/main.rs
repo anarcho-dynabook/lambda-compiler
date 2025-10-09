@@ -60,7 +60,7 @@ impl Expr {
                 match ($asm.to_string().as_str(), $cmt.to_string().as_str()) {
                     (BLANK, cmt) => format!("{INDENT};;; {cmt}\n"),
                     (asm, BLANK) => format!("{INDENT}{asm}\n"),
-                    (asm, cmt) => format!("{INDENT}{asm:<16}; {cmt}\n"),
+                    (asm, cmt) => format!("{INDENT}{asm:<20}; {cmt}\n"),
                 }
             };
         }
@@ -103,7 +103,7 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(mnemonic!(format!("mov rax, LA.{id}") => BLANK))
+                Ok(mnemonic!(format!("mov rax, LA.{id}") => "absolute address (No PIE)"))
             }
         }
     }
