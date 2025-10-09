@@ -91,7 +91,7 @@ impl Expr {
                         ctx.env
                             .iter()
                             .enumerate()
-                            .map(|(i, x)| format!("{x}: {}", REGS[i]))
+                            .map(|(i, x)| format!("{x}: {}", REGS[i].to_uppercase()))
                             .collect::<Vec<_>>()
                             .join(", ")
                     )),
