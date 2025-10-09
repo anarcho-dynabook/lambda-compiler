@@ -67,14 +67,14 @@ impl Expr {
         match self {
             Expr::Variable(name) => Ok(mnemonic!(
                 format!("mov rax, {}", REGS[ctx.variable(name)?])
-                => format!("Load variable: {name}")
+                => format!("Load variable `{name}`")
             )),
             Expr::Apply(la, arg) => Ok(format!(
                 "{arg}{0}{1}{la}{2}{3}",
-                mnemonic!("mov rbx, rax" => format!("Argument: {arg}")),
-                mnemonic!("push rbx"     => "Retract (overwrite-guard)"),
-                mnemonic!("pop rbx"      => BLANK),
-                mnemonic!("call rax"     => format!("Apply lambda: {la}")),
+                mnemonic!("mov rbx, rax" => format!("Argument `{arg}`")),
+                mnemonic!("push rbx"     => "Retract to stack"),
+                mnemonic!("pop rbx"      => "(overwrite-guard)"),
+                mnemonic!("call rax"     => format!("Apply `{la}`")),
                 arg = arg.compile(ctx)?,
                 la = la.compile(ctx)?,
             )),
@@ -86,7 +86,7 @@ impl Expr {
                 let body = body.compile(ctx)?;
                 let lambda_abstract = &format!(
                     "LA.{id}:\n{0}{1}{2}{body}{3}\n",
-                    mnemonic!(BLANK => format!("Lambda Abstract: {self}")),
+                    mnemonic!(BLANK => format!("Lambda Abstract `{self}`")),
                     mnemonic!(BLANK => format!("Environment {{ {} }}",
                         ctx.env
                             .iter()
@@ -97,13 +97,13 @@ impl Expr {
                     )),
                     mnemonic!(
                         format!("mov {}, rbx", REGS[ctx.variable(arg)?])
-                        => format!("Bind variable: {arg}")
+                        => format!("Bind variable `{arg}`")
                     ),
                     mnemonic!("ret" => BLANK)
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(mnemonic!(format!("mov rax, LA.{id}") => "absolute address (No PIE)"))
+                Ok(mnemonic!(format!("mov rax, LA.{id}") => "Absolute address (No PIE)"))
             }
         }
     }
@@ -120,7 +120,7 @@ impl Context {
         if let Some(var) = self.env.iter().position(|x| x == name) {
             Ok(var)
         } else {
-            Err(format!("undefine variable: {name}"))
+            Err(format!("undefine variable `{name}`"))
         }
     }
 
