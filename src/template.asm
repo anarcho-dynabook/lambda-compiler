@@ -13,7 +13,7 @@ section .text
 
 ; Source (the expression of Lambda calculus)
 ; This assembly code is generated from that
-; >>> $src
+; `$src`
 
 _start:
 $main
