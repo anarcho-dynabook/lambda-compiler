@@ -103,7 +103,7 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(mnemonic!(format!("mov rax, LA.{id}") => "Absolute address (No PIE)"))
+                Ok(mnemonic!(format!("mov rax, LA.{id}") => "Function pointer"))
             }
         }
     }
