@@ -18,12 +18,12 @@ section .text
 _start:
 $main
     mov rbx, church_decode
-    call rax        ; Partial apply
-    mov rbx, 0      ; Initial value
-    call rax        ; Decode to integer
+    call rax
+    mov rbx, 0          ; Initial value
+    call rax            ; Decode to integer
 
-    mov rdi, rax    ; Return evaluated value
-    mov rax, 60     ; Exit
+    mov rdi, rax        ; Return evaluated value
+    mov rax, 60         ; Exit
     syscall
 
 $code
