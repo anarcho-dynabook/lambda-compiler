@@ -72,7 +72,7 @@ impl Expr {
             Expr::Apply(la, arg) => Ok(format!(
                 "{arg}{0}{1}{la}{2}{3}",
                 mnemonic!("mov rbx, rax" => format!("Argument: {arg}")),
-                mnemonic!("push rbx"     => "Migrate (protect from overwrite)"),
+                mnemonic!("push rbx"     => "Retract (overwrite-guard)"),
                 mnemonic!("pop rbx"      => BLANK),
                 mnemonic!("call rax"     => format!("Apply lambda: {la}")),
                 arg = arg.compile(ctx)?,
