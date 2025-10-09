@@ -39,11 +39,11 @@ fn parse_atom(chars: &mut Peekable<Chars>) -> Result<Expr, String> {
             skip_whitespace(chars);
             match chars.next() {
                 Some(')') => Ok(expr),
-                _ => Err("Expected ')'".to_string()),
+                _ => Err("Expected `)`".to_string()),
             }
         }
         Some(&ch) if is_ident_start(ch) => parse_variable(chars),
-        Some(&ch) => Err(format!("Unexpected character: '{}'", ch)),
+        Some(&ch) => Err(format!("Unexpected character `{}`", ch)),
         None => Err("Unexpected end of input".to_string()),
     }
 }
@@ -55,7 +55,7 @@ fn parse_lambda(chars: &mut Peekable<Chars>) -> Result<Expr, String> {
     skip_whitespace(chars);
     match chars.next() {
         Some('.') => (),
-        _ => return Err("Expected '.' after lambda parameter".to_string()),
+        _ => return Err("Expected `.` after lambda parameter".to_string()),
     }
     let body = parse_expr(chars)?;
     Ok(Expr::Lambda(var.to_string(), Box::new(body)))
