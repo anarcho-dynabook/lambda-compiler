@@ -73,7 +73,7 @@ impl Expr {
                 "{arg}{0}{1}{la}{2}{3}",
                 mnemonic!("mov rbx, rax" => format!("Argument: {arg}")),
                 mnemonic!("push rbx"     => "Migrate (protect from overwrite)"),
-                mnemonic!("pop rbx"      => "Reinstate in argument from stack"),
+                mnemonic!("pop rbx"      => BLANK),
                 mnemonic!("call rax"     => format!("Apply lambda: {la}")),
                 arg = arg.compile(ctx)?,
                 la = la.compile(ctx)?,
@@ -103,10 +103,7 @@ impl Expr {
                 );
                 ctx.code += lambda_abstract;
                 ctx.env = original_env;
-                Ok(mnemonic!(
-                    format!("mov rax, LA.{id}")
-                    => "Store address of lambda"
-                ))
+                Ok(mnemonic!(format!("mov rax, LA.{id}") => BLANK))
             }
         }
     }
